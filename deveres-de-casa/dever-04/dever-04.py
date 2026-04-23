@@ -1,45 +1,52 @@
 import sys
+import time
 
-
-def function_r(n):
-    """Calculates F(n) using recursion."""
+def funcao_recursiva(n):
+    """
+    Calcula F(n) usando recursão.
+    Relação: F(n) = 2 * F(n-1) + n^2
+    """
+    # Caso base: definido no problema como F(1) = 1
     if n == 1:
         return 1
     
-    return 2 * function_r(n - 1) + n**2
+    # Passo recursivo
+    return 2 * funcao_recursiva(n - 1) + n**2
 
-
-def function_closed(n):
+def funcao_fechada(n):
     """
-    The closed form of the function is given by:
-    F(n) = 13 * 2^(n - 1) - n^2 - 4n - 6
+    Calcula F(n) usando a fórmula fechada (matemática direta).
+    F(n) = 13 * 2^(n-1) - n^2 - 4n - 6
     """
     return 13 * (2 ** (n - 1)) - n**2 - 4 * n - 6
 
-
-def main():
-    """Main execution block."""
-    sys.setrecursionlimit(2000)
+def medir_execucao():
+    """Função para testar os valores e medir o desempenho de ambos os métodos."""
+    # Aumentando o limite para suportar valores maiores de n
+    sys.setrecursionlimit(3000)
     
-    try:
-        n_str = input("Enter an integer value for n (n >= 1): ")
-        n = int(n_str)
+    valores_n = [10, 100, 500, 1000]
     
-        if n < 1:
-            print("Base case is F(1), so enter a value >= 1.")
-            return
+    print(f"{'n':<10} | {'Método':<15} | {'Resultado (parcial)':<25} | {'Tempo (s)':<15}")
+    print("-" * 75)
     
-        # Calculating using both methods
-        recursive_result = function_r(n)
-        closed_result = function_closed(n)
-    
-        print("\n--- Results ---")
-        print(f"Using recursion: F({n}) = {recursive_result}")
-        print(f"Using closed formula: F({n}) = {closed_result}")
-    
-    except ValueError:
-        print("Invalid input. Please enter a valid integer.")
-
+    for n in valores_n:
+        # Medição da Recursão
+        inicio_r = time.perf_counter()
+        res_r = funcao_recursiva(n)
+        fim_r = time.perf_counter()
+        tempo_r = fim_r - inicio_r
+        
+        # Medição da Fórmula Fechada
+        inicio_f = time.perf_counter()
+        res_f = funcao_fechada(n)
+        fim_f = time.perf_counter()
+        tempo_f = fim_f - inicio_f
+        
+        # Exibindo resultados (abreviados para não quebrar a tabela)
+        print(f"{n:<10} | {'Recursivo':<15} | {str(res_r)[:20]:<25} | {tempo_r:<15.8f}")
+        print(f"{'':<10} | {'Fechada':<15} | {str(res_f)[:20]:<25} | {tempo_f:<15.8f}")
+        print("-" * 75)
 
 if __name__ == "__main__":
-    main()
+    medir_execucao()
